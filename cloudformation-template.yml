@@ -17,7 +17,8 @@ Parameters:
   IPList:
     Description: Provide a list of space-separated single IP addresses. No CIDR or subnet needed. Defaults to all allowed IPs. This list is not validated so be careful or the deployment will fail. Defaults to allow all.
     Type: String
-    Default: '127.0.01 73.0.163.94'
+    Default: "['*']"
+    #Default: '127.0.01 73.0.163.94'
     #Default: '*'
   DBName:
     # this will map to the SQL_DATABASE var
