@@ -272,7 +272,7 @@ Resources:
                 Fn::Join:
                 - ''
                 - - "DEBUG=0\n"
-                  - "SECRET_KEY=\n"
+                  - "SECRET_KEY="
                   - Ref: DjangoSecretKey
                   - "\n"
                   - "DJANGO_ALLOWED_HOSTS="
