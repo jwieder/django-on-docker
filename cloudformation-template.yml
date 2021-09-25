@@ -209,13 +209,13 @@ Resources:
             pip_upgrade:
               command: pip3 install --upgrade pip setuptools
             git_docker_env:
-              command: git clone https://github.com/jwieder/django-on-docker /tmp/django-on-docker
+              command: git clone https://github.com/jwieder/django-on-docker /tmp/syntax
             update_git_perms:
-              command: chown -R ubuntu:docker /tmp/django-on-docker
+              command: chown -R ubuntu:docker /tmp/syntax
 
         docker_env_config:
           files:
-            "/tmp/django-on-docker/docker-compose.prod.yml":
+            "/tmp/syntax/docker-compose.prod.yml":
               content:
                 Fn::Join:
                 - ''
@@ -251,7 +251,7 @@ Resources:
               group: docker
               encoding: plain
             
-            "/tmp/django-on-docker/.env.prod.db":
+            "/tmp/syntax/.env.prod.db":
               content:
                 Fn::Join:
                 - ''
@@ -267,7 +267,7 @@ Resources:
               group: docker
               encoding: plain
 
-            "/tmp/django-on-docker/.env.prod":
+            "/tmp/syntax/.env.prod":
               content:
                 Fn::Join:
                 - ''
@@ -300,7 +300,7 @@ Resources:
           commands:
             build_it:
               command: docker-compose -f docker-compose.prod.yml up -d --build
-              cwd: /tmp/django-on-docker
+              cwd: /tmp/syntax
 
     Properties:
       InstanceType: t2.micro
