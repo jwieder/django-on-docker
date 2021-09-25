@@ -4,7 +4,7 @@ if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for postgres..."
 
-    while ! (bash -c '</dev/tcp/'"$SQL_HOST"'/'"$SQL_PORT"' && echo PORT OPEN') 2>/dev/null ; do
+    while ! nc -z $SQL_HOST $SQL_PORT; do
       sleep 0.1
     done
 
