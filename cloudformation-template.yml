@@ -229,8 +229,8 @@ Resources:
                   - "    volumes:\n"
                   - "      - static_volume:/home/app/web/staticfiles\n"
                   - "      - media_volume:/home/app/web/mediafiles\n"
-                  - "    ports:\n"
-                  - "      - \"8000:8000\"\n"
+                  - "    expose:\n"
+                  - "      - 8000\n"
                   - "    env_file:\n"
                   - "      - ./.env.prod\n\n"
                   - "volumes:\n"
@@ -268,6 +268,7 @@ Resources:
                   - "DJANGO_ALLOWED_HOSTS="
                   - Ref: IPList
                   - "\n"
+                  - "SQL_ENGINE=django.db.backends.postgresql\n"
                   - "SQL_DATABASE="
                   - Ref: DBName
                   - "\nSQL_USER="
@@ -279,11 +280,16 @@ Resources:
                   - Fn::GetAtt: 
                       - RDSInstance
                       - Endpoint.Address
-                  # - Ref: DBHost
                   - "\nSQL_PORT="
                   - Ref: DBPort
                   - "\n"
                   - "DATABASE=postgres\n"
+                  - "VIRTUAL_HOST="
+                  postgres
+                  - "\nVIRTUAL_PORT=8000\n"
+
+
+VIRTUAL_HOST=<YOUR_DOMAIN.COM>
               mode: '000644'
               owner: ubuntu
               group: docker
