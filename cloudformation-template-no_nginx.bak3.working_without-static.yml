@@ -17,9 +17,7 @@ Parameters:
   IPList:
     Description: Provide a list of space-separated single IP addresses. No CIDR or subnet needed. Defaults to all allowed IPs. This list is not validated so be careful or the deployment will fail. Defaults to allow all.
     Type: String
-    Default: "['*']"
-    #Default: '127.0.01 73.0.163.94'
-    #Default: '*'
+    Default: '*'
   DBName:
     # this will map to the SQL_DATABASE var
     Description: The name of the database
@@ -229,11 +227,23 @@ Resources:
                   - "    volumes:\n"
                   - "      - static_volume:/home/app/web/staticfiles\n"
                   - "      - media_volume:/home/app/web/mediafiles\n"
-                  - "    ports:\n"
-                  - "      - \"8000:8000\"\n"
+                  - "    expose:\n"
+                  - "      - 8000\n"
                   - "    env_file:\n"
-                  - "      - ./.env.prod\n\n"
+                  - "      - ./.env.prod\n"
+                  - "    depends_on:\n"
+                  - "      - db\n"
+                  - "  db:\n    image: postgres:13-alpine\n"
+                  - "    volumes:\n      - postgres_data:/var/lib/postgresql/data/\n"
+                  - "    env_file:\n      - ./.env.prod.db\n"
+                  - "  nginx:\n    build: ./nginx\n"
+                  - "    volumes:\n"
+                  - "      - static_volume:/home/app/web/staticfiles\n"
+                  - "      - media_volume:/home/app/web/mediafiles\n"
+                  - "    ports:\n      - 1337:80\n"
+                  - "    depends_on:\n      - web\n\n"
                   - "volumes:\n"
+                  - "  postgres_data:\n"
                   - "  static_volume:\n"
                   - "  media_volume:\n"
               mode: '000644'
@@ -293,9 +303,6 @@ Resources:
           commands:
             build_it:
               command: docker-compose -f docker-compose.prod.yml up -d --build
-              cwd: /tmp/syntax
-            migrate_it:
-              command: docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
               cwd: /tmp/syntax
 
     Properties:
@@ -377,6 +384,10 @@ Resources:
         ToPort: 443
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
         FromPort: 8000
         ToPort: 8000
         CidrIp: 0.0.0.0/0
@@ -384,4 +395,4 @@ Resources:
         FromPort: 1337
         ToPort: 1337
         CidrIp: 0.0.0.0/0
-      GroupDescription: Enable SSH access and web ports. 
+      GroupDescription: Enable SSH and web access
