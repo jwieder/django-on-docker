@@ -231,10 +231,8 @@ Resources:
                   - "      - media_volume:/home/app/web/mediafiles\n"
                   - "    ports:\n"
                   - "      - \"8000:8000\"\n"
-                  #- "    expose:\n"
-                  #- "      - 8000\n"
                   - "    env_file:\n"
-                  - "      - ./.env.prod\n"
+                  - "      - ./.env.prod\n\n"
                   - "volumes:\n"
                   - "  static_volume:\n"
                   - "  media_volume:\n"
@@ -295,6 +293,9 @@ Resources:
           commands:
             build_it:
               command: docker-compose -f docker-compose.prod.yml up -d --build
+              cwd: /tmp/syntax
+            migrate_it:
+              command: docker-compose -f docker-compose.prod.yml exec web python manage.py migrate
               cwd: /tmp/syntax
 
     Properties:
@@ -374,10 +375,6 @@ Resources:
       - IpProtocol: tcp
         FromPort: 443
         ToPort: 443
-        CidrIp: 0.0.0.0/0
-      - IpProtocol: tcp
-        FromPort: 8080
-        ToPort: 8080
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
         FromPort: 8000
