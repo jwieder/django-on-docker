@@ -3,6 +3,10 @@ Description: Ubuntu 18.04 LTS EC2 instance for Django containerization. Requires
 
 Parameters:
 
+  TestingDomainName:
+    Description: A DNS name for VIRTUAL_HOST assignment.
+    Type: String
+    Default: djangoec2.local
   DjangoSecretKey:
     NoEcho: true
     Description: The secret key used for Django app.
@@ -233,6 +237,28 @@ Resources:
                   - "      - 8000\n"
                   - "    env_file:\n"
                   - "      - ./.env.prod\n\n"
+                  - "  db:\n"
+                  - "    image: postgres:13.4-alpine\n"
+                  - "    volumes:\n"
+                  - "      - postgres_data:/var/lib/postgresql/data/\n"
+                  - "    env_file:\n"
+                  - "      - ./.env.staging.db\n"
+                  - "  nginx-proxy:\n"
+                  - "    container_name: nginx-proxy\n"
+                  - "    build: nginx\n"
+                  - "    restart: always\n"
+                  - "    ports:\n"
+                  - "      - 443:443\n"
+                  - "      - 80:80\n"
+                  - "    volumes:\n"
+                  - "      - static_volume:/home/app/web/staticfiles\n"
+                  - "      - media_volume:/home/app/web/mediafiles\n"
+                  - "      - certs:/etc/nginx/certs\n"
+                  - "      - html:/usr/share/nginx/html\n"
+                  - "      - vhost:/etc/nginx/vhost.d\n"
+                  - "      - /var/run/docker.sock:/tmp/docker.sock:ro\n"
+                  - "    depends_on:\n"
+                  - "      - web\n"
                   - "volumes:\n"
                   - "  static_volume:\n"
                   - "  media_volume:\n"
@@ -285,11 +311,9 @@ Resources:
                   - "\n"
                   - "DATABASE=postgres\n"
                   - "VIRTUAL_HOST="
-                  postgres
+                  - Ref: TestingDomainName
                   - "\nVIRTUAL_PORT=8000\n"
 
-
-VIRTUAL_HOST=<YOUR_DOMAIN.COM>
               mode: '000644'
               owner: ubuntu
               group: docker
