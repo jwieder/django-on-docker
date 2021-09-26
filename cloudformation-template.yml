@@ -242,7 +242,7 @@ Resources:
                   - "    volumes:\n"
                   - "      - postgres_data:/var/lib/postgresql/data/\n"
                   - "    env_file:\n"
-                  - "      - ./.env.staging.db\n"
+                  - "      - ./.env.prod.db\n"
                   - "  nginx-proxy:\n"
                   - "    container_name: nginx-proxy\n"
                   - "    build: nginx\n"
